@@ -40,10 +40,6 @@ Un sistema web completo para la gestión académica desarrollado con Next.js 15,
    ```
 
 3. **Configurar variables de entorno**
-   ```bash
-   cp .env.example .env
-   ```
-   
    Editar el archivo `.env` con tu configuración de base de datos:
    ```env
    DATABASE_URL="postgresql://usuario:contraseña@localhost:5432/lab3?schema=public"
@@ -82,10 +78,10 @@ Un sistema web completo para la gestión académica desarrollado con Next.js 15,
 
 ### Entidades Principales
 
-# Estudiantes
-# Cursos
-# Inscripciones
-# Vista unificando lo anterior
+- Estudiantes
+- Cursos
+- Inscripciones
+- Vista unificando lo anterior
 
 ### Relaciones
 
