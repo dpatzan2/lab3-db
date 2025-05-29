@@ -83,6 +83,9 @@ Un sistema web completo para la gestión académica desarrollado con Next.js 15,
 - Inscripciones
 - Vista unificando lo anterior
 
+### Diagrama ER
+![Diagrama ER](https://github.com/user-attachments/assets/d45d565e-52cd-4aaf-8e0b-9c3b9b3d8b91)
+
 ### Relaciones
 
 - **Estudiante → Inscripciones**: One-to-Many
