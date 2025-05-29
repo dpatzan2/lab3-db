@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
+  output          = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum NivelCurso {
+  BASICO
+  INTERMEDIO
+  AVANZADO
+}
+
+enum EstadoEstudiante {
+  ACTIVO
+  INACTIVO
+  GRADUADO
+  SUSPENDIDO
+}
+
+model Estudiante {
+  id              Int                @id @default(autoincrement())
+  codigo          String             @unique @db.VarChar(10)
+  nombre          String             @db.VarChar(100)
+  apellido        String             @db.VarChar(100)
+  email           String             @unique @db.VarChar(150)
+  telefono        String?            @db.VarChar(15)
+  fechaNacimiento DateTime           @db.Date
+  estado          EstadoEstudiante   @default(ACTIVO)
+  fechaIngreso    DateTime           @default(now())
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime?          // Cambiado a opcional (sin @updatedAt)
+
+  inscripciones   Inscripcion[]
+
+  @@index([email])
+  @@index([codigo])
+  @@map("estudiantes")
+}
+
+model Curso {
+  id              Int                @id @default(autoincrement())
+  codigo          String             @unique @db.VarChar(10)
+  nombre          String             @db.VarChar(100)
+  descripcion     String?            @db.Text
+  creditos        Int                @db.SmallInt
+  nivel           NivelCurso         @default(BASICO)
+  horasSemanales  Int                @db.SmallInt
+  activo          Boolean            @default(true)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime?         
+
+  inscripciones   Inscripcion[]
+
+  @@index([codigo])
+  @@map("cursos")
+}
+
+model Inscripcion {
+  id              Int                @id @default(autoincrement())
+  estudianteId    Int
+  cursoId         Int
+  fechaInscripcion DateTime          @default(now())
+  notaFinal       Decimal?           @db.Decimal(5, 2)
+  asistencia      Int                @default(0) @db.SmallInt
+  aprobado        Boolean            @default(false)
+  periodo         String             @db.VarChar(10)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime?          
+
+  estudiante      Estudiante         @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  curso           Curso              @relation(fields: [cursoId], references: [id], onDelete: Cascade)
+
+  @@unique([estudianteId, cursoId, periodo])
+  @@map("inscripciones")
+}
+
+// Definición de la vista
+view VistaEstudiantesCursos {
+  estudiante_id       Int       @map("estudiante_id")
+  codigo_estudiante   String    @map("codigo_estudiante")
+  nombre_completo     String    @map("nombre_completo")
+  email               String    @map("email")
+  estado_estudiante   String    @map("estado_estudiante")
+  inscripcion_id      Int       @map("inscripcion_id")
+  periodo             String    @map("periodo")
+  notaFinal          Float?    @map("notaFinal")
+  estado_academico    String    @map("estado_academico")
+  porcentaje_asistencia String  @map("porcentaje_asistencia")
+  aprobado           Boolean   @map("aprobado")
+  curso_id            Int       @map("curso_id")
+  codigo_curso        String    @map("codigo_curso")
+  nombre_curso        String    @map("nombre_curso")
+  creditos           Int       @map("creditos")
+  nivel_curso         String    @map("nivel_curso")
+  horasSemanales     Int       @map("horasSemanales")
+  curso_activo       Boolean   @map("curso_activo")
+  fechaInscripcion   DateTime  @map("fechaInscripcion")
+  fecha_ingreso_estudiante DateTime @map("fecha_ingreso_estudiante")
+
+  @@map("vista_estudiantes_cursos")
+  @@ignore  // Esto evita que Prisma intente administrar la vista como una tabla
+}

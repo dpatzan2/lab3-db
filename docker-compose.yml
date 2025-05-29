@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: lab3_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: lab3_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./prisma/migrations/20250529172944_ddl/migration.sql:/docker-entrypoint-initdb.d/01-migration.sql
+      - ./prisma/migrations/20250529190052_ddl/migration.sql:/docker-entrypoint-initdb.d/02-migration.sql
+      - ./prisma/migrations/20250529172944_ddl/data.sql:/docker-entrypoint-initdb.d/03-data.sql
+    networks:
+      - lab3_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lab3_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lab3_app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@postgres:5432/lab3_db?schema=public"
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - lab3_network
+
+volumes:
+  postgres_data:
+
+networks:
+  lab3_network:
+    driver: bridge
