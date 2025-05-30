@@ -1,6 +1,7 @@
-# Sistema de Gestión Académica - Laboratorio 3
+#Sistema de Gestión Académica - Laboratorio 3
 
-Un sistema web completo para la gestión académica desarrollado con Next.js 15, Prisma ORM y PostgreSQL, permite administrar estudiantes, cursos e inscripciones de manera eficiente.
+Un sistema web completo para la gestión académica desarrollado con Next.js 15, Prisma ORM y PostgreSQL, permite administrar estudiantes, cursos e inscripciones de manera eficiente, para ver la pantalla de los diferentes CRUD: [Pantallas del laboratorio.pdf](https://github.com/user-attachments/files/20515433/Pantallas.del.laboratorio.pdf)
+
 
 ## 🚀 Características Principales
 
